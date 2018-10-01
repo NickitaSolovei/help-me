@@ -54,10 +54,17 @@ module.exports = function count(s, pairs) {
       powOfggg++;
       if (ggg > 1000000007) {
         ggg = ggg % 1000000007;
-        let powSokr = Math.floor((pairs[i][1] - 1) / powOfggg); //целочисленное округление
-        let restPow = (pairs[i][1] - 1) % powOfggg; // а это остаток степени. это надо довозвести
-        ggg = ggg * powSokr;
-        ggg %= 1000000007;
+        let powSokr = Math.floor((pairs[i][1]  ) / powOfggg); //целочисленное округление // - 1
+        let restPow = (pairs[i][1]  ) % powOfggg; // а это остаток степени. это надо довозвести // - 1
+
+        let ggg2 = ggg;
+        for (let iii = 1; iii < powSokr; iii++){
+          ggg = ggg * ggg2;
+          if (ggg > 1000000007) {
+            ggg = ggg % 1000000007;
+          }
+        }
+        
         ggg *=  Math.pow(pairs[i][0],  restPow);
         ggg %= 1000000007;
         NumberTrueK *= ggg;
