@@ -118,7 +118,7 @@ module.exports = function count(s, pairs) {
 
   /*powCicle: for (let i = 0; i < pairs.length; i++) {
     let powOfggg = 0; // не знаю с како начинать
-    let ggg = 1; // число
+    let ggg = 1; // число fdgdfg
 
     for (let j = 1; j < pairs[i][1]; j++) {
       ggg = ggg * pairs[i][0];
