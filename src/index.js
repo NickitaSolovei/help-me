@@ -33,20 +33,134 @@ module.exports = function count(s, pairs) {
   let NumberTrueK = 0;
   let arr = [];
   let str = s.split('');
+  let strLen = str.length;
   for (let i = 0, len = str.length; i < len; i++) {
     str[i] = +str[i]
   }
   for (let i = 0, len = pairs.length; i < len; i++){
     arr[i] = pairs[i][0];
   }
+
+  // самое маленькое среди pairs
+  let arrSortPairs = pairs.sort((a, b) => a[0] - b[0])
+  // макс количество повторяющихся 1 в s
+  let repOne = 0;
+  for (let i = 0, repOneTime = 0; i < str.length; i++) {
+    if (str[i] === 1) {
+      repOneTime++;
+      if (repOneTime > repOne) {
+        repOne = repOneTime;
+      }
+    }
+    else repOneTime = 0;
+  }
+  // теперь сравним
+  if (repOne >= arrSortPairs[0][0]) {
+    return 0;
+  }
+
+
   // 1)
   let N = 1;
   
   for (let i = 0, len = pairs.length; i < len; i++) { 
     N *= pairs[i][0];  
   }
+  if (N > 150000000) { //150000000
+    return false;
+  }
   
 
+  ///////////// пробуем с 23*29
+  if (pairs.length > 1000) { /// > 3
+    function fun3(a, b) {
+      return (a[0] - b[0]);
+    }
+    let arr8 = pairs.sort(fun3);
+    let max1 = arr8[arr8.length - 1][0];
+    let max2 = arr8[arr8.length - 2][0];
+    arr8.pop();
+    arr8.pop();
+    let N1 = max1 * max2;
+    let N1Max = N1 * arr8[arr8.length - 1][0];
+
+    let arr11 = new Array(N1Max + 1 + strLen); 
+    for (let k = 1; k <= N1Max + strLen; k++) {
+      arr11[k] = 1;
+    }
+    for (let i = 0; i < pairs.length; i++) {
+      for (let j = pairs[i][0]; j <= (N1Max + strLen); j += pairs[i][0]) {
+          arr11[j] = 0;
+      }
+    }
+
+    function MainFun(diapazon) {
+      /*
+      let Num1 = 0;
+      iiiCycle: for (let i = 1; i <= diapazon; i++) {
+        for (let j = 0; j < strLen; j++) {
+          if (arr11[i + j] === str[j]) {
+            continue;
+          }
+          else continue iiiCycle;
+        }
+        Num1++;
+      }
+      */
+      let Num1 = 0;
+
+      kCycle: for (let k = 1; k <= diapazon; k++) {
+        jCycle: for (let j = 0; j < str.length; j++) {
+          let kj = k + j;
+          if (str[j] === 0) {
+            for (let iii = 0; iii < arr.length; iii++) {
+              if (kj % arr[iii] === 0){ // если целочисленно делится на любое из arr[iii]
+                continue jCycle;
+              }
+            }
+            continue kCycle;
+          }
+          if (str[j] === 1) {
+            for (let iii = 0; iii < arr.length; iii++) {
+              if (kj % arr[iii] === 0) {
+                continue kCycle;
+              }
+            }
+            continue jCycle;
+          }
+        }
+        Num1++;
+      }
+
+      return Num1;
+    }
+
+    let kolSovpadeniy2923 = MainFun(N1);
+    let sumOfSovp = 0;
+    let arrOfSovp = [];
+    let arrVrem = [];
+    for (let i = 0; i < arr8.length; i++) {
+      let diapaz = N1 * arr8[i][0];
+      let prom = MainFun(diapaz);
+      let sovp = (prom - kolSovpadeniy2923 * arr8[i][0]) * N / (N1 * arr8[i][0]); 
+      arrOfSovp.push(sovp);
+      arrVrem.push(sovp)
+      sumOfSovp += sovp;
+    }
+
+    //NumberTrueK = kolSovpadeniy2923 * N / N1 + sumOfSovp;
+    function fun4(a, b) {
+      return (a - b);
+    }
+    let arrOfSovpSort = arrOfSovp.sort(fun4);
+    NumberTrueK = kolSovpadeniy2923 * N / N1 + arrOfSovpSort[0];
+
+    /*let arr8 = [pairs[0][0], pairs[1][0]];
+    for (let i = 2; i < pairs.length; i++) {
+      if ()
+    }*/
+
+  }
 
  
 
@@ -56,19 +170,17 @@ module.exports = function count(s, pairs) {
   // еденицы заменим на und, а 0 на 8
   
 
-  let arr11 = new Array(N + 1 + str.length); 
-  for (let k = 1; k <= N + str.length; k++) {
+  let arr11 = new Array(N + 1 + strLen); 
+  for (let k = 1; k <= N + strLen; k++) {
     arr11[k] = 1;
   }
   for (let i = 0; i < pairs.length; i++) {
-    for (let j = 1; j <= (N + str.length) / pairs[i][0]; j++) {
-      if (arr11[j * pairs[i][0]] === 1) {
-        arr11[j * pairs[i][0]] = 0;
-      }
+    for (let j = pairs[i][0]; j <= (N + strLen); j += pairs[i][0]) {
+        arr11[j] = 0;
     }
   }
   iiiCycle: for (let i = 1; i <= N; i++) {
-    for (let j = 0; j < str.length; j++) {
+    for (let j = 0; j < strLen; j++) {
       if (arr11[i + j] === str[j]) {
         continue;
       }
@@ -76,6 +188,8 @@ module.exports = function count(s, pairs) {
     }
     NumberTrueK++;
   }
+
+
 
 
   /*
@@ -118,7 +232,7 @@ module.exports = function count(s, pairs) {
 
   /*powCicle: for (let i = 0; i < pairs.length; i++) {
     let powOfggg = 0; // не знаю с како начинать
-    let ggg = 1; // число fdgdfg
+    let ggg = 1; // число
 
     for (let j = 1; j < pairs[i][1]; j++) {
       ggg = ggg * pairs[i][0];
