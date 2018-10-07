@@ -66,7 +66,7 @@ module.exports = function count(s, pairs) {
   for (let i = 0, len = pairs.length; i < len; i++) { 
     N *= pairs[i][0];  
   }
-  if (N > 150000000) { //150000000
+  if (N > 100000000) { //150000000
     return false;
   }
   
