@@ -83,14 +83,14 @@ module.exports = function count(s, pairs) {
   for (let i = 0, len = pairs.length; i < len; i++) { 
     N *= pairs[i][0];  
   }
-  /*if (N > 100000000) { //150000000
+  if (N > 100000000) { //150000000
     return false;
   }
-  */
+  
 
   ///////////// пробуем с 23*29
   //if (pairs.length > 1000) { /// > 3
-  if (N > 100000000) { // N > 1000000000
+  if (N > 10000000000000) { // N > 1000000000
     function fun3(a, b) {
       return (a[0] - b[0]);
     }
