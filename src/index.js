@@ -11,12 +11,29 @@ module.exports = function count(s, pairs) {
       powOfggg++;
       if (ggg > 1000000007) {
         ggg = ggg % 1000000007;
+        if (ggg > 100000) continue;
         let powSokr = Math.floor(step / powOfggg); //целочисленное округление // - 1
         let restPow = step % powOfggg; // а это остаток степени. это надо довозвести // - 1
         let req = xxx(ggg, powSokr);  
-        let ost = Math.pow(chis, restPow);
-        let otvet = req * ost;
-        otvet %= 1000000007;
+
+        let ost = 1;
+        let arrOst = [];
+        for (let m = 1; m <= restPow; m++) { /// вместо числа - массив
+          ost *= chis;
+          if (ost > 1000000007) {
+            ost %= 1000000007;
+          }   
+        }
+        //let ost = Math.pow(chis, restPow);
+        let otvet = req;
+        for (let m = 1; m <= restPow; m++) { 
+          otvet *= chis;
+          if (otvet > 1000000007) {
+            otvet %= 1000000007;
+          } 
+        }
+        /*let otvet = req * ost;
+        otvet %= 1000000007;*/
         return otvet;
       }
     }
@@ -66,13 +83,14 @@ module.exports = function count(s, pairs) {
   for (let i = 0, len = pairs.length; i < len; i++) { 
     N *= pairs[i][0];  
   }
-  if (N > 100000000) { //150000000
+  /*if (N > 100000000) { //150000000
     return false;
   }
-  
+  */
 
   ///////////// пробуем с 23*29
-  if (pairs.length > 1000) { /// > 3
+  //if (pairs.length > 1000) { /// > 3
+  if (N > 100000000) { // N > 1000000000
     function fun3(a, b) {
       return (a[0] - b[0]);
     }
@@ -139,21 +157,33 @@ module.exports = function count(s, pairs) {
     let sumOfSovp = 0;
     let arrOfSovp = [];
     let arrVrem = [];
+
+    let umn = 1;
+    let umnChis = 0;
     for (let i = 0; i < arr8.length; i++) {
       let diapaz = N1 * arr8[i][0];
       let prom = MainFun(diapaz);
       let sovp = (prom - kolSovpadeniy2923 * arr8[i][0]) * N / (N1 * arr8[i][0]); 
-      arrOfSovp.push(sovp);
+      let sovp2 = N / (N1 * arr8[i][0]);
+      arrOfSovp.push([sovp, sovp2]);
       arrVrem.push(sovp)
       sumOfSovp += sovp;
+
+
+      // это теория о умножении 2 3 11 и делении на их кол-во
+      umn = umn * arr8[i][0];
+      umnChis++;
     }
+
+
 
     //NumberTrueK = kolSovpadeniy2923 * N / N1 + sumOfSovp;
     function fun4(a, b) {
-      return (a - b);
+      return (a[0] - b[0]);
     }
     let arrOfSovpSort = arrOfSovp.sort(fun4);
-    NumberTrueK = kolSovpadeniy2923 * N / N1 + arrOfSovpSort[0];
+    // NumberTrueK = kolSovpadeniy2923 * N / N1 - arrOfSovpSort[0][1];
+    NumberTrueK = kolSovpadeniy2923 * N / N1 - umn / umnChis;
 
     /*let arr8 = [pairs[0][0], pairs[1][0]];
     for (let i = 2; i < pairs.length; i++) {
